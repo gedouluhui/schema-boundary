@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "direction": "source-minus-target",
+  "status": "counterexample",
+  "reason": "Serialized JSON independently accepted by source and rejected by target.",
+  "domain": {
+    "max_depth": 1,
+    "max_items": 2,
+    "max_string": 3,
+    "alphabet": "aesu",
+    "integer_min": 0,
+    "integer_max": 8,
+    "extra_keys": [
+      "__extra__"
+    ],
+    "object_keys": [
+      "__extra__",
+      "limit",
+      "query",
+      "region"
+    ],
+    "numbers": "integers only",
+    "symbolic_nodes": 7
+  },
+  "limits": {
+    "timeout_ms_per_check": 5000,
+    "rlimit_per_check": 2000000,
+    "max_symbolic_nodes": 3000,
+    "max_compile_work_units": 25000
+  },
+  "hashes": {
+    "source_canonical_sha256": "97168ed43106daccee59122b5ea555311582780ecaab69555f5320a98a0a8893",
+    "target_canonical_sha256": "e083ea88a896e8c90a51fb4298fdcb4e9483781b02e3463d3b2e56968138fac9"
+  },
+  "witness": {
+    "limit": 1,
+    "query": "a"
+  },
+  "witness_json": "{\"limit\":1,\"query\":\"a\"}",
+  "verification": {
+    "source_nonempty_in_domain": true,
+    "roundtrip_checked": true,
+    "domain_contains": true,
+    "source_accepts": true,
+    "target_accepts": false
+  },
+  "failures": [
+    {
+      "instance_path": "",
+      "schema_path": "/required",
+      "keyword": "required",
+      "message": "Target constraint failed: required"
+    }
+  ],
+  "stats": {
+    "symbolic_nodes": 7,
+    "compile_work_units": 16,
+    "domain_constraints": 98
+  },
+  "engines": {
+    "z3": "4.16.0",
+    "jsonschema": "4.26.0"
+  },
+  "example": "Synthetic search-tool contract. Demonstration only, not a provider API or production incident."
+}

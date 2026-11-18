@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Synthetic search tool input, relaxed version",
+  "type": "object",
+  "properties": {"query": {"type": "string"}, "limit": {"type": "integer", "minimum": 0, "maximum": 16}},
+  "required": ["query"],
+  "additionalProperties": true
+}

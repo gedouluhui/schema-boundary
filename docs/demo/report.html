@@ -1,0 +1,50 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"><title>Schema Boundary — compatibility evidence</title><style>
+:root{--ink:#202840;--muted:#56617a;--paper:#ffffff;--ground:#edf0f8;--blue:#304db8;--red:#a02d45;--amber:#805700;--line:#d2d9ea;--mono:Consolas,ui-monospace,monospace}*{box-sizing:border-box}body{margin:0;background:var(--ground);color:var(--ink);font:15px/1.6 'Segoe UI',system-ui,sans-serif}.wrap{max-width:1200px;margin:0 auto;padding:28px 32px 60px}.mast{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:16px;gap:16px}.brand{font-weight:800;letter-spacing:.03em}.brand:before{content:'{';font:30px var(--mono);color:var(--blue);vertical-align:middle;margin-right:10px}.mono,.eyebrow{font-family:var(--mono)}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}.intro{margin:34px 0 28px;max-width:800px}h1{font-size:clamp(34px,5vw,60px);line-height:1.06;letter-spacing:-.045em;margin:10px 0 18px}h2{font-size:19px;margin:0 0 12px}p{margin:8px 0 15px}.lead{font-size:16px;color:var(--muted)}.layout{display:grid;grid-template-columns:285px 1fr;gap:22px;align-items:start}.scope{background:var(--paper);border:1px solid var(--line);padding:23px}.scope-label{display:inline-block;background:#fff4d6;color:var(--amber);font:11px var(--mono);padding:4px 8px;margin-bottom:12px}.scope dl{margin:0}.scope dt{font:11px var(--mono);color:var(--muted);margin-top:18px}.scope dd{margin:3px 0 0;font-weight:600;overflow-wrap:anywhere}.scope p{font-size:12px;color:var(--muted)}.case{background:var(--paper);border:1px solid var(--line);min-width:0}.case-head{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}.status{font:11px var(--mono);padding:5px 8px;color:var(--amber);background:#fff4d6}.status.counterexample{color:var(--red);background:#fbe9ee}.witness{margin:0;padding:30px;font:19px/1.75 var(--mono);background:#f7f8fd;white-space:pre-wrap;overflow-wrap:anywhere;border-bottom:1px solid var(--line);min-height:150px}.flow{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}.flow>div{padding:18px 24px;background:#f2f5ff;color:var(--blue)}.flow>div:last-child{background:#fff4f6;color:var(--red)}.flow strong{display:block;font-size:18px}.flow small{font-size:11px}.body{padding:24px;min-width:0}.reason{border-left:3px solid var(--amber);padding:12px 16px;background:#fff9eb;margin-bottom:24px;font-size:13px}.findings{list-style:none;margin:0;padding:0}.findings li{padding:16px 0;border-bottom:1px solid var(--line)}.findings li:last-child{border-bottom:0}.path{display:block;font:12px var(--mono);color:var(--blue);overflow-wrap:anywhere}.findings p{font-size:13px;margin:8px 0;color:var(--muted);overflow-wrap:anywhere}summary{cursor:pointer;color:var(--blue);padding:10px 0;font-size:13px;min-height:44px}pre.details{font:11px/1.65 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f6fb;padding:15px}details{border-top:1px solid var(--line);margin-top:16px}.note{font-size:12px;color:var(--muted);padding-top:16px}.footer{font:11px var(--mono);color:var(--muted);padding-top:25px}.skip{position:absolute;top:-60px;background:white;padding:12px}.skip:focus{top:10px}a:focus-visible,summary:focus-visible{outline:3px solid var(--blue);outline-offset:3px}@media(max-width:740px){.wrap{padding:20px 16px 35px}.layout{grid-template-columns:1fr}.scope{order:2}.intro{margin:25px 0}.flow strong{font-size:16px}.body,.case-head{padding:18px}.witness{padding:20px;font-size:16px}.mast .eyebrow{max-width:120px;text-align:right}.scope dl{display:grid;grid-template-columns:1fr 1fr;gap:3px 18px}.scope dt{margin-top:9px}.scope dd{margin-top:9px}}@media print{.wrap{padding:0}.layout{display:block}.scope{margin-top:15px}.skip{display:none}pre,li{break-inside:avoid}}
+</style></head><body><a class="skip" href="#case">Skip to evidence</a><main class="wrap"><header class="mast"><span class="brand">SCHEMA BOUNDARY</span><span class="eyebrow">JSON Schema / 2020-12<br>Bounded model checking</span></header><p class="reason">Synthetic search-tool contract. Demonstration only, not a provider API or production incident.</p><section class="intro"><span class="eyebrow">Source minus target</span><h1>One input crosses<br>the boundary.</h1><p class="lead">An interface change is easier to understand with an actual input. The evidence below is tied to a precise, finite JSON domain.</p></section><div class="layout"><aside class="scope"><span class="scope-label">NOT A UNIVERSAL PROOF</span><h2>Finite domain</h2><dl><dt>Container depth</dt><dd>1</dd><dt>Array length</dt><dd>2</dd><dt>String length</dt><dd>3</dd><dt>Integer interval</dt><dd>0 … 8</dd><dt>Value alphabet</dt><dd>aesu</dd><dt>Object keys</dt><dd>__extra__, limit, query, region</dd></dl><p>Numbers are integer-valued only. Other keys, characters, fractions and larger structures are outside this search. Increase the domain or use other validation before making broader claims.</p><details><summary>Full domain and budgets</summary><pre class="details">{
+  &quot;domain&quot;: {
+    &quot;max_depth&quot;: 1,
+    &quot;max_items&quot;: 2,
+    &quot;max_string&quot;: 3,
+    &quot;alphabet&quot;: &quot;aesu&quot;,
+    &quot;integer_min&quot;: 0,
+    &quot;integer_max&quot;: 8,
+    &quot;extra_keys&quot;: [
+      &quot;__extra__&quot;
+    ],
+    &quot;object_keys&quot;: [
+      &quot;__extra__&quot;,
+      &quot;limit&quot;,
+      &quot;query&quot;,
+      &quot;region&quot;
+    ],
+    &quot;numbers&quot;: &quot;integers only&quot;,
+    &quot;symbolic_nodes&quot;: 7
+  },
+  &quot;limits&quot;: {
+    &quot;timeout_ms_per_check&quot;: 5000,
+    &quot;rlimit_per_check&quot;: 2000000,
+    &quot;max_symbolic_nodes&quot;: 3000,
+    &quot;max_compile_work_units&quot;: 25000
+  }
+}</pre></details></aside><section class="case" id="case"><header class="case-head"><span class="eyebrow">Counterexample case file</span><span class="status counterexample">counterexample</span></header><pre class="witness">{&quot;limit&quot;:1,&quot;query&quot;:&quot;a&quot;}</pre><section class="flow"><div><small>INDEPENDENT JSONSCHEMA CHECK</small><strong>Source accepts</strong></div><div><small>AFTER JSON SERIALIZATION</small><strong>Target rejects</strong></div></section><div class="body"><div class="reason">Serialized JSON independently accepted by source and rejected by target.</div><h2>Where the target rejects it</h2><ul class="findings"><li><span class="path">schema /required · instance /</span><p>Target constraint failed: required</p></li></ul><p class="note">A missing counterexample is not evidence outside the displayed bounds. A source with no instances is reported separately; unsupported keywords and exhausted solver budgets remain unknown.</p><details><summary>Input fingerprints and validator evidence</summary><pre class="details">{
+  &quot;hashes&quot;: {
+    &quot;source_canonical_sha256&quot;: &quot;97168ed43106daccee59122b5ea555311582780ecaab69555f5320a98a0a8893&quot;,
+    &quot;target_canonical_sha256&quot;: &quot;e083ea88a896e8c90a51fb4298fdcb4e9483781b02e3463d3b2e56968138fac9&quot;
+  },
+  &quot;engines&quot;: {
+    &quot;z3&quot;: &quot;4.16.0&quot;,
+    &quot;jsonschema&quot;: &quot;4.26.0&quot;
+  },
+  &quot;verification&quot;: {
+    &quot;source_nonempty_in_domain&quot;: true,
+    &quot;roundtrip_checked&quot;: true,
+    &quot;domain_contains&quot;: true,
+    &quot;source_accepts&quot;: true,
+    &quot;target_accepts&quot;: false
+  },
+  &quot;stats&quot;: {
+    &quot;symbolic_nodes&quot;: 7,
+    &quot;compile_work_units&quot;: 16,
+    &quot;domain_constraints&quot;: 98
+  }
+}</pre></details></div></section></div><footer class="footer">LOCAL ANALYSIS · NO EXTERNAL REFERENCES · NO SCRIPTS OR TELEMETRY</footer></main></body></html>

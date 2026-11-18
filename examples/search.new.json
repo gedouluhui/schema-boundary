@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Synthetic search tool input, breaking version",
+  "type": "object",
+  "properties": {
+    "query": {"type": "string", "minLength": 1},
+    "limit": {"type": "integer", "minimum": 1, "maximum": 3},
+    "region": {"type": "string", "enum": ["us", "eu"]}
+  },
+  "required": ["query", "limit", "region"],
+  "additionalProperties": false
+}

@@ -1,0 +1,8 @@
+include README.zh-CN.md THIRD_PARTY_NOTICES.md
+include docs/DESIGN.md docs/VERIFICATION.md docs/requirements-verified.txt
+recursive-include docs/demo *.html *.json *.png
+recursive-include examples *.json *.py
+recursive-include tools *.py
+recursive-include tests *.py
+exclude docs/PLAN.md
+prune artifacts
