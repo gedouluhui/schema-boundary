@@ -1,5 +1,7 @@
 # Schema Boundary
 
+[![CI](https://github.com/gedouluhui/schema-boundary/actions/workflows/tests.yml/badge.svg)](https://github.com/gedouluhui/schema-boundary/actions/workflows/tests.yml)
+
 **Show the input that breaks your new contract.**
 
 Given two JSON Schemas, find a concrete JSON value that the **source accepts and the target rejects**. Useful for reviewing AI-tool parameters, structured-output contracts and API input changes. Every reported counterexample is serialized, parsed again, and checked by the independent `jsonschema` validator.
