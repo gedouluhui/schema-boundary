@@ -105,3 +105,34 @@ For an independent official corpus check, clone `json-schema-org/JSON-Schema-Tes
 Normative references: [2020-12 validation](https://json-schema.org/draft/2020-12/json-schema-validation) and [core applicators](https://json-schema.org/draft/2020-12/json-schema-core).
 
 MIT for original code; dependencies and reference-corpus licensing are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). AI-assisted development and independent review were used. Contributions should include a small synthetic counterexample or a failing independent oracle case, not private schemas or credentials.
+
+## Quickstart and support
+
+### Problem
+Find a concrete JSON value accepted by a source schema and rejected by a target schema, with the finite search domain attached.
+
+### Install
+```sh
+python -m pip install .
+```
+
+### Success
+```sh
+schema-boundary compare examples/search.old.json examples/search.relaxed.json --domain examples/domain.json --accept-bounded
+```
+Expected: The bounded-compatible result is accepted only because --accept-bounded is explicit; exit 0.
+
+### Deliberate failure
+```sh
+schema-boundary compare examples/search.old.json examples/search.new.json --domain examples/domain.json --output review-case
+```
+Expected: A serialized counterexample is independently rechecked and the command exits 1.
+
+### Evidence and coverage boundaries
+Evidence includes independent jsonschema replay, exhaustive tiny-domain predicate evaluation, pairwise enumerated decisions, real Z3 resource exhaustion, a bad decoded-witness control, and selected official-corpus checks. A solver UNSAT is bounded-compatible over the printed domain, never a universal schema-subsumption proof.
+
+### Support status
+Version 0.1.0 is an experimental bounded checker for Python 3.10+. It is not published to PyPI according to this source snapshot; install a reviewed checkout or source distribution. Maintenance is best-effort with no SLA.
+
+### Limitations
+The default domain uses depth 2, arrays 0..2, strings 0..8 codepoints, integers -16..16, and resolved object keys. Fractional instances, $ref, patterns, formats, network resolution, and many other keywords are unsupported and produce unknown rather than silent success.
