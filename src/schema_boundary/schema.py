@@ -1,4 +1,6 @@
 """Reject unsupported schema positions before any reference resolution."""
+from copy import deepcopy
+
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import SchemaError
 from .io import InputError, Unsupported, preflight, integral_decimals
@@ -7,6 +9,31 @@ ANNOTATIONS = {'title','description','$comment','default','examples','deprecated
 SUPPORTED = ANNOTATIONS | {'$schema','type','const','enum','minimum','maximum','exclusiveMinimum','exclusiveMaximum','multipleOf',
     'minLength','maxLength','minItems','maxItems','items','properties','required','additionalProperties','minProperties','maxProperties',
     'allOf','anyOf','oneOf','not'}
+
+
+def strip_annotations(schema):
+    """Return a schema copy without annotations in schema positions only."""
+    if type(schema) is bool:
+        return schema
+    if type(schema) is not dict:
+        raise InputError('schema must be an object or boolean')
+    result = {}
+    for keyword, value in schema.items():
+        if keyword in ANNOTATIONS:
+            continue
+        if keyword in ('allOf', 'anyOf', 'oneOf'):
+            if not isinstance(value, list):
+                raise InputError(keyword+' requires an array')
+            result[keyword] = [strip_annotations(child) for child in value]
+        elif keyword in ('not', 'items', 'additionalProperties'):
+            result[keyword] = strip_annotations(value)
+        elif keyword == 'properties':
+            if not isinstance(value, dict):
+                raise InputError('properties requires an object')
+            result[keyword] = {key: strip_annotations(child) for key, child in value.items()}
+        else:
+            result[keyword] = deepcopy(value)
+    return result
 
 
 def validate_schema(schema):

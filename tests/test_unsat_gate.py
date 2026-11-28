@@ -44,6 +44,45 @@ class UnsatGateTests(unittest.TestCase):
             'integer_min', 'integer_max', 'extra_keys',
         })
 
+    def test_proof_strips_annotations_only_at_schema_positions(self):
+        literal = {
+            'description': 'literal-description',
+            'title': 'literal-title',
+            'default': 'literal-default',
+            'examples': ['literal-examples'],
+        }
+        schema = {
+            'type': 'object',
+            'description': 'PRIVATE_SOURCE_DESCRIPTION',
+            'title': 'PRIVATE_SOURCE_TITLE',
+            'default': {'private': 'PRIVATE_SOURCE_DEFAULT'},
+            'examples': [{'private': 'PRIVATE_SOURCE_EXAMPLES'}],
+            'properties': {
+                'payload': {
+                    'description': 'PRIVATE_NESTED_DESCRIPTION',
+                    'anyOf': [
+                        {'const': literal, 'title': 'PRIVATE_BRANCH_TITLE'},
+                        {'enum': [literal], 'description': 'PRIVATE_ENUM_DESCRIPTION'},
+                    ],
+                },
+            },
+            'additionalProperties': False,
+        }
+        result = compare(schema, schema)
+        self.assertEqual(result['status'], 'bounded-compatible')
+        evidence = result['proof']
+        self.assertEqual(set(evidence['source']), {'type', 'properties', 'additionalProperties'})
+        self.assertEqual(set(evidence['target']), {'type', 'properties', 'additionalProperties'})
+        payload = evidence['source']['properties']['payload']
+        self.assertEqual(set(payload), {'anyOf'})
+        const_branch, enum_branch = payload['anyOf']
+        self.assertEqual(set(const_branch), {'const'})
+        self.assertEqual(set(enum_branch), {'enum'})
+        self.assertEqual(const_branch['const'], literal)
+        self.assertEqual(enum_branch['enum'], [literal])
+        self.assertNotIn('PRIVATE_', canonical(evidence))
+        self.assertTrue(replay_unsat(evidence, timeout_ms=1000))
+
     def test_missing_domain_field_is_malformed_even_with_valid_digest(self):
         evidence = self.compare({'type': 'integer'}, {'type': 'integer'})['proof']
         del evidence['domain']['integer_max']

@@ -83,9 +83,9 @@ Explicitly ignored annotations: `title`, `description`, `$comment`, `default`, `
 
 1 MiB/input; JSON depth 32 and 4,000 structural nodes; up to 12 resolved object keys, domain depth 3, array length 8, string length 64, alphabet 128 codepoints, and integer endpoints +/-10^12. Unrolling is capped at 3,000 symbolic nodes; predicate/literal compilation shares a 25,000-work-unit cap. Expensive enum construction is debited too.
 
-`--timeout-ms` (default 5000, max 60000) and `--rlimit` (default 2,000,000, max 50,000,000) apply **per solver check**, not to total input parsing/compilation/wall time. Structural caps are not a hard OS memory/time sandbox. Compilation can take seconds before a solver budget is consulted. Lower domain bounds for large schemas.
+`--timeout-ms` (default 5000, max 60000) sets one monotonic total deadline for the complete comparison, including input parsing, normalization, validation, compilation, both solver checks, witness verification, evidence serialization, and independent replay. Each solver check receives only the remaining wall-clock budget, rounded up to at least 1 ms. `--rlimit` (default 2,000,000, max 50,000,000) applies per solver check. Structural caps are not a hard OS memory/time sandbox; Python and native calls may return slightly after their requested budget. Lower domain bounds for large schemas.
 
-No application network calls, telemetry, model API or schema-reference fetches. Reports contain canonical source hashes, the explicit domain, a witness and JSON Pointer paths—not absolute filenames or freeform schema annotation values. **Property names and literal witness data may themselves be private.** Review before sharing. Hashes are provenance aids, not authenticity signatures.
+No application network calls, telemetry, model API or schema-reference fetches. Reports contain canonical source hashes, the explicit domain, a witness and JSON Pointer paths—not absolute filenames or freeform schema annotation values. When present, `proof` contains annotation-free normalized source/target schemas; annotation-like keys inside `const`/`enum` literal objects are data and are preserved. **Property names and literal witness data may themselves be private.** Review before sharing. Hashes are provenance aids, not authenticity signatures.
 
 ## Verify rather than trust the UI
 

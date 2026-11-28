@@ -8,7 +8,7 @@ import z3
 
 from .domain import Domain
 from .io import Unsupported, canonical, normalize
-from .schema import validate_schema
+from .schema import strip_annotations, validate_schema
 from .symbolic import Tree
 
 FORMAT = 'schema-boundary-proof-v1'
@@ -34,8 +34,8 @@ def serialize_evidence(domain, source, target):
         'format': FORMAT,
         'encoder': ENCODER,
         'domain': domain_payload,
-        'source': source,
-        'target': target,
+        'source': strip_annotations(source),
+        'target': strip_annotations(target),
     }
     return {**payload, 'canonical_sha256': _digest(payload)}
 
