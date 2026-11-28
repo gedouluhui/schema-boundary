@@ -85,9 +85,9 @@ Explicitly ignored annotations: `title`, `description`, `$comment`, `default`, `
 
 1 MiB/input; JSON depth 32 and 4,000 structural nodes; up to 12 resolved object keys, domain depth 3, array length 8, string length 64, alphabet 128 codepoints, and integer endpoints +/-10^12. Unrolling is capped at 3,000 symbolic nodes; predicate/literal compilation shares a 25,000-work-unit cap. Expensive enum construction is debited too.
 
-`--timeout-ms` (default 5000, max 60000) and `--rlimit` (default 2,000,000, max 50,000,000) apply **per solver check**, not to total input parsing/compilation/wall time. Structural caps are not a hard OS memory/time sandbox. Compilation can take seconds before a solver budget is consulted. Lower domain bounds for large schemas.
+`--timeout-ms` (default 5000, max 60000) sets one monotonic total deadline for the comparison pipeline after source, target, and domain inputs have been loaded and parsed, including normalization, validation, compilation, both solver checks, witness verification, evidence serialization, and independent replay. CLI file reading and initial JSON parsing happen before `compare()` and are bounded by file-size and structural limits, not by this deadline. Each solver check receives only the remaining wall-clock budget, rounded up to at least 1 ms. `--rlimit` (default 2,000,000, max 50,000,000) applies per solver check. Structural caps are not a hard OS memory/time sandbox; Python and native calls may return slightly after their requested budget. Lower domain bounds for large schemas.
 
-No application network calls, telemetry, model API or schema-reference fetches. Reports contain canonical source hashes, the explicit domain, a witness and JSON Pointer paths—not absolute filenames or freeform schema annotation values. **Property names and literal witness data may themselves be private.** Review before sharing. Hashes are provenance aids, not authenticity signatures.
+No application network calls, telemetry, model API or schema-reference fetches. Reports contain canonical source hashes, the explicit domain, a witness and JSON Pointer paths—not absolute filenames or freeform schema annotation values. When present, `proof` contains annotation-free normalized source/target schemas; annotation-like keys inside `const`/`enum` literal objects are data and are preserved. **Property names and literal witness data may themselves be private.** Review before sharing. Hashes are provenance aids, not authenticity signatures.
 
 ## Verify rather than trust the UI
 
@@ -107,3 +107,34 @@ For an independent official corpus check, clone `json-schema-org/JSON-Schema-Tes
 Normative references: [2020-12 validation](https://json-schema.org/draft/2020-12/json-schema-validation) and [core applicators](https://json-schema.org/draft/2020-12/json-schema-core).
 
 MIT for original code; dependencies and reference-corpus licensing are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). AI-assisted development and independent review were used. Contributions should include a small synthetic counterexample or a failing independent oracle case, not private schemas or credentials.
+
+## Quickstart and support
+
+### Problem
+Find a concrete JSON value accepted by a source schema and rejected by a target schema, with the finite search domain attached.
+
+### Install
+```sh
+python -m pip install .
+```
+
+### Success
+```sh
+schema-boundary compare examples/search.old.json examples/search.relaxed.json --domain examples/domain.json --accept-bounded
+```
+Expected: The bounded-compatible result is accepted only because --accept-bounded is explicit; exit 0.
+
+### Deliberate failure
+```sh
+schema-boundary compare examples/search.old.json examples/search.new.json --domain examples/domain.json --output review-case
+```
+Expected: A serialized counterexample is independently rechecked and the command exits 1.
+
+### Evidence and coverage boundaries
+Evidence includes independent jsonschema replay, exhaustive tiny-domain predicate evaluation, pairwise enumerated decisions, real Z3 resource exhaustion, a bad decoded-witness control, and selected official-corpus checks. A solver UNSAT is bounded-compatible over the printed domain, never a universal schema-subsumption proof.
+
+### Support status
+Version 0.1.0 is an experimental bounded checker for Python 3.10+. It is not published to PyPI according to this source snapshot; install a reviewed checkout or source distribution. Maintenance is best-effort with no SLA.
+
+### Limitations
+The default domain uses depth 2, arrays 0..2, strings 0..8 codepoints, integers -16..16, and resolved object keys. Fractional instances, $ref, patterns, formats, network resolution, and many other keywords are unsupported and produce unknown rather than silent success.

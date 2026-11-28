@@ -35,3 +35,34 @@ python tools/verify_mutations.py
 ```
 
 项目无网络/模型调用；报告不回显schema注释，但属性名和反例字面量也可能敏感，分享前需检查。未发布PyPI；不要自行安装同名未知包。当前提供源码与本地安装包，不预造上线链接。
+
+## 快速开始与支持状态
+
+### 问题
+找到一个被源 schema 接受、被目标 schema 拒绝的具体 JSON 值，并附带有限搜索域。
+
+### 安装
+```sh
+python -m pip install .
+```
+
+### 成功命令
+```sh
+schema-boundary compare examples/search.old.json examples/search.relaxed.json --domain examples/domain.json --accept-bounded
+```
+预期：由于显式使用 --accept-bounded，有界兼容结果被接受；退出码 0。
+
+### 故意失败命令
+```sh
+schema-boundary compare examples/search.old.json examples/search.new.json --domain examples/domain.json --output review-case
+```
+预期：序列化反例经过独立复检，命令退出码 1。
+
+### 证据与覆盖边界
+证据包括独立 jsonschema 重放、微型域谓词穷举、成对枚举决策、真实 Z3 资源耗尽、错误解码 witness 对照，以及选定的官方语料库检查。求解器 UNSAT 只表示在打印域内有界兼容，绝不是通用 schema 包含证明。
+
+### 支持状态
+版本 0.1.0 是面向 Python 3.10+ 的实验性有界检查器。源码快照表明尚未发布到 PyPI；请安装经审查的检出或源码分发包。维护为尽力而为，不提供 SLA。
+
+### 限制
+默认域使用深度 2、数组 0..2、字符串 0..8 个码点、整数 -16..16 和解析后的对象键。不支持小数实例、$ref、pattern、format、网络解析及许多其他关键字；这些情况产生 unknown，不会静默成功。
