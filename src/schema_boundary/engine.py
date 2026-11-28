@@ -7,7 +7,7 @@ import z3
 from jsonschema import Draft202012Validator
 from .domain import Domain
 from .io import InputError, Unsupported, normalize, fingerprint
-from .proof import replay_unsat, serialize_evidence
+from .proof import ENCODER, replay_unsat, serialize_evidence
 from .schema import validate_schema
 from .symbolic import Tree
 
@@ -92,10 +92,10 @@ def compare(source,target,*,domain=None,timeout_ms=5000,rlimit=2000000):
         if result==z3.unknown:
             raise Unsupported('difference search unknown: '+solver.reason_unknown())
         if result==z3.unsat:
-            evidence=serialize_evidence(report['domain'],tree.constraints,source,target,old,new)
+            evidence=serialize_evidence(d,source,target)
             check_phase()
             try:
-                replayed=replay_unsat(evidence,timeout_ms=check_phase(),rlimit=rlimit)
+                replayed=replay_unsat(evidence,timeout_ms=check_phase(),rlimit=rlimit,deadline=deadline)
             except (Unsupported, TimeoutError):
                 raise
             except Exception as exc:
@@ -103,7 +103,7 @@ def compare(source,target,*,domain=None,timeout_ms=5000,rlimit=2000000):
             check_phase()
             if not replayed:
                 raise Unsupported('independent UNSAT replay unavailable: replay did not prove unsat')
-            evidence['replay']={'status':'unsat','context':'fresh','encoding':'z3-smt2-v1'}
+            report['verification']['unsat_replay']={'status':'unsat','context':'fresh','encoder':ENCODER}
             report['proof']=evidence
             report.update(status='bounded-compatible',reason='No source-minus-target counterexample in the stated domain; not a universal compatibility guarantee.')
             return report

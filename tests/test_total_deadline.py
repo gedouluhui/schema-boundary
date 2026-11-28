@@ -43,6 +43,23 @@ class TotalDeadlineTests(unittest.TestCase):
         self.assertEqual(result['status'], 'unknown')
         self.assertEqual(result['reason'], 'total_deadline')
 
+    def test_engine_passes_shared_absolute_deadline_to_replay(self):
+        from schema_boundary import engine
+
+        captured = {}
+
+        def fake_replay(evidence, **kwargs):
+            captured.update(kwargs)
+            return True
+
+        before = time.monotonic()
+        with patch.object(engine, 'replay_unsat', side_effect=fake_replay):
+            result = compare({'type': 'integer'}, {'type': 'integer'}, timeout_ms=1000)
+        after = time.monotonic()
+        self.assertEqual(result['status'], 'bounded-compatible')
+        self.assertGreaterEqual(captured['deadline'], before + 1.0)
+        self.assertLessEqual(captured['deadline'], after + 1.0)
+
     def test_both_checks_and_replay_share_one_deadline(self):
         from schema_boundary import engine
 
