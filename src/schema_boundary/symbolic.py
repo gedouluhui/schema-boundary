@@ -6,14 +6,16 @@ existential variables: negation and oneOf therefore retain their JSON meaning.
 from decimal import Decimal
 from fractions import Fraction
 from types import SimpleNamespace
+import time
 import z3
 from .io import Unsupported
 
 NULL, BOOL, INT, STRING, ARRAY, OBJECT = range(6)
 
 class Tree:
-    def __init__(self,domain,keys):
+    def __init__(self,domain,keys,*,deadline=None):
         self.domain,self.keys=domain,tuple(keys)
+        self.deadline=deadline
         if domain.node_count(keys)>3000: raise Unsupported('domain exceeds 3000 symbolic nodes')
         self.ctx=z3.Context()
         self.constraints=[]; self.nodes=0; self.visits=0
@@ -44,6 +46,8 @@ class Tree:
         return n
 
     def _charge(self,amount=1):
+        if self.deadline is not None and time.monotonic()>=self.deadline:
+            raise Unsupported('total_deadline')
         self.visits+=amount
         if self.visits>25000: raise Unsupported('predicate and literal compilation exceeds 25000 work units')
 
